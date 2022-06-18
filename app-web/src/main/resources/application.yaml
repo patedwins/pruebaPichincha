@@ -1,0 +1,50 @@
+server:
+  servlet:
+    contextPath: /pichincha-transaccion
+  port: 8081
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driverClassName: oracle.jdbc.OracleDriver
+    url: jdbc:oracle:thin:@172.30.7.15:1521:desseps
+    username: CRT
+    password: CRT2015
+    hikari:
+     connectionTestQuery: SELECT 1 FROM DUAL
+     minimumIdle: ${base.minimumidle:5}
+     connectionTimeout: ${base.timeout:60000}
+     idleTimeout: ${base.idletimeout:600000}
+     maxLifetime: ${base.maxlifetime:180000}
+     maximumPoolSize: ${base.maxpoolsize:300}
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+  jackson:
+    default-property-inclusion: non_null
+
+logging:
+  level:
+    root: INFO
+    '[ec.gob.seps.acopiosf.cartera]': DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql: TRACE
+    org.springframework.jdbc.core.JdbcTemplate: DEBUG
+    org.springframework.jdbc.core.StatementCreatorUtils: TRACE
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+    path: swagger-ui.html
+    enabled: ${SWAGGER_ON:false}
+#    path: http://localhost:8082/seps-base-api-rest/v3/api-docs
+jasypt:
+  encryptor:
+    algorithm: PBEWithMD5AndDES
+    iv-generator-classname: org.jasypt.iv.NoIvGenerator
+    password: ${jasypt.encryptor.password}
+    

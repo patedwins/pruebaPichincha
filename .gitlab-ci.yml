@@ -1,0 +1,30 @@
+before_script:
+  - docker info
+
+stages:
+  - despliegue_pre
+  - despliegue_pro
+
+despliegue pre:
+  stage: despliegue_pre
+  script:
+    - echo "INICIA LA CONSTRUCCION DE DESARROLLO"
+    - export DOCKER_HOST=tcp://adonis.seps.local:2376 DOCKER_TLS_VERIFY=1
+    - docker build --no-cache --build-arg SEPS_MAVEN_USER_ARG="$SEPS_MAVEN_USER" --build-arg SEPS_MAVEN_PASSWORD_ARG="$SEPS_MAVEN_PASSWORD" -t nexus.seps.gob.ec:4000/acopiosf-consultas-backend .
+    - docker login -u $SVR_DEPLOY_USR_PRE -p $SVR_DEPLOY_PWD_PRE nexus.seps.gob.ec:4000
+    - docker push nexus.seps.gob.ec:4000/acopiosf-consultas-backend
+    - docker rmi nexus.seps.gob.ec:4000/acopiosf-consultas-backend
+  only:
+    - develop
+
+despliegue pro:
+  stage: despliegue_pro
+  script:
+    - echo "INICIA LA CONSTRUCCION DE DESARROLLO"
+    - export DOCKER_HOST=tcp://adonis.seps.local:2376 DOCKER_TLS_VERIFY=1
+    - docker build --no-cache --build-arg SEPS_MAVEN_USER_ARG="$SEPS_MAVEN_USER" --build-arg SEPS_MAVEN_PASSWORD_ARG="$SEPS_MAVEN_PASSWORD" -t nexus.seps.gob.ec:5000/acopiosf-consultas-backend:2.0.0 .
+    - docker login -u $SVR_DEPLOY_USR -p $SVR_DEPLOY_PWD nexus.seps.gob.ec:5000
+    - docker push nexus.seps.gob.ec:5000/acopiosf-consultas-backend:2.0.0
+    - docker rmi nexus.seps.gob.ec:5000/acopiosf-consultas-backend:2.0.0
+  only:
+    - master

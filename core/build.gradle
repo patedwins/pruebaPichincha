@@ -1,0 +1,9 @@
+description = 'core'
+
+dependencies {
+    implementation project(':domain')
+    implementation 'ec.gob.seps.utils:seps-core-util:1.1.0-SNAPSHOT'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.5.3'
+    compileOnly 'org.projectlombok:lombok:1.18.20'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
+}

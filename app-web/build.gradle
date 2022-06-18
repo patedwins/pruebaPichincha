@@ -1,0 +1,93 @@
+plugins {
+    id 'org.springframework.boot' version '2.5.4'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+    id 'war'
+    id 'pmd'
+    id 'checkstyle'
+}
+
+pmd {
+    toolVersion = "6.1.0"
+    ruleSetFiles = files("${project.rootDir}/pmd-rulesets.xml")
+}
+
+checkstyle {
+
+    project.ext.checkstyleVersion = '8.45.1'
+    project.ext.sevntuChecksVersion = '1.40.0'
+
+    repositories {
+        mavenCentral()
+        // we keep artifacts in maven central too,
+        // but this is just example of usage from our old maven repo on github
+        /*maven {
+            url "http://sevntu-checkstyle.github.com/sevntu.checkstyle/maven2"
+        }*/
+    }
+
+    ignoreFailures = false
+    configFile = file("${project.rootDir}/checkstyle.xml")
+
+    //sourceSets = [sourceSets.main]
+    showViolations = true
+    //reportsDir = file("$project.buildDir/checkstyleReports")
+    //configProperties = ['baseDir': "$project.projectDir"]
+
+    //https://discuss.gradle.org/t/some-checkstyle-rules-dont-work-in-gradle/16102/4
+    checkstyleMain {
+        source = sourceSets.main.allSource
+    }
+
+    configurations {
+        checkstyle
+    }
+
+    dependencies{
+        assert project.hasProperty("checkstyleVersion")
+
+        checkstyle "com.puppycrawl.tools:checkstyle:8.45.1"
+        checkstyle "com.github.sevntu-checkstyle:sevntu-checks:1.40.0"
+    }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(':domain')
+    implementation project(':core')
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    implementation 'org.springdoc:springdoc-openapi-ui:1.5.10'
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+//    runtimeOnly 'org.postgresql:postgresql'
+    // https://mvnrepository.com/artifact/com.oracle.database.jdbc/ojdbc8
+    implementation 'com.oracle.database.jdbc:ojdbc8:21.3.0.0'
+
+    annotationProcessor 'org.projectlombok:lombok'
+    providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    implementation 'ec.gob.seps.utils:seps-core-util:1.1.0-SNAPSHOT'
+
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-hibernate5
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-hibernate5:2.12.4'
+
+
+    implementation group: 'com.github.ulisesbocchio', name: 'jasypt-spring-boot-starter', version: '3.0.3'
+
+}
+
+test {
+    useJUnitPlatform()
+}

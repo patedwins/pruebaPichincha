@@ -1,2 +1,1 @@
-# pruebaPichincha
-Prueba pichincha
+# pichincha-transaccion
